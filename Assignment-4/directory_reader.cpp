@@ -1,69 +1,66 @@
 #include <iostream>
 #include <cstring>
+#include <signal.h> 
 #include <dirent.h>
-#include <signal.h>
 
 using namespace std;
 
-class Directory_Raider
+bool caughtSIGINT = false;
+
+void signal_handler(int sig)
 {
-private:
-    DIR *directory;
-	struct dirent *result;
-     
-public:
-   void DReader(string);
-   bool signal_handler(sig_t);
-};
- 
-void Directory_Raider::DReader(string name)
-{
-    
-	if ((directory = opendir (name)) != NULL) 
-	{
-  	/* print all the results and directories within directory */
-  		while ((file = readdir (directory)) != NULL)
-  		{
-    		cout<<file->d_name<<"\n";
-  		}
-  		closedir (directory);
-	}
-	else
-	{
-  		perror ("Could not open directory");
-  		return EXIT_FAILURE;
-	}
+  caughtSIGINT = true;
 }
 
-bool Directory_Raider::signal_handler(sig_t s)
+void ReadDirectory(string directory)
 {
+  DIR *directorypointer;
+  struct dirent *file;
+
+  if((directorypointer = opendir(directory.c_str())) == NULL)
+  {
+    cout << "Error opening " << directory << "\n";
+  }
+
+  while (((file = readdir(directorypointer)) != NULL)&&(caughtSIGINT == false))
+  {
+    cout <<file->d_name<<"\n";
+  }
+
+  closedir(directorypointer);
+}
+
+int main()
+{
+  signal(SIGINT, signal_handler);
   string choice;
+  string goagain;
+  string directory;
 
-  cout<<"Do you want to quit ? ";
-  cin>>choice;
-  if(((choice[0]=="n")||(choice[0]=="N"))&&(choice.length()==2))
+  while(true) //infinite loop
   {
-    return true;
-  }
-  else
-  {
-    return false;
-    //exit(1);
-  }
-}
- 
-int main(int argc , char *argv[])
-{
-	Directory_Raider direct;
-	string name;
-  bool flag == true;
 
-  while(flag==true)
-  {
-      cout<<"Enter directory to list : ";
-      cin>>name;
-      direct.DReader(name);
-      flag = signal(SIGINT,direct.signal_handler);
+    cout << "Enter directory name : ";
+    cin >> directory;
+    ReadDirectory(directory);
+    cout << "\n go again ? : (y/n)";
+    cin >> goagain;
+
+    if((caughtSIGINT == true)||(goagain == "n"))
+    {
+      cout << "\nDo you want to quit ? (y/n) : ";
+      cin >> choice;
+      if (choice == "y")
+      {
+        break;
+      }
+      else
+      {
+        caughtSIGINT = false;
+      }
+    }
+    else
+      cout << "Here we go again\n";
   }
 
   return 0;
