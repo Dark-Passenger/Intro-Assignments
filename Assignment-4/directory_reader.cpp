@@ -12,14 +12,14 @@ void signal_handler(int sig)
   caughtSIGINT = true;
 }
 
-void ReadDirectory(string directory)
+bool ReadDirectory(string directory)
 {
   DIR *directorypointer;
   struct dirent *file;
 
   if((directorypointer = opendir(directory.c_str())) == NULL)
   {
-    cout << "Error opening " << directory << "\n";
+    return false;
   }
 
   while (((file = readdir(directorypointer)) != NULL)&&(caughtSIGINT == false))
@@ -28,6 +28,7 @@ void ReadDirectory(string directory)
   }
 
   closedir(directorypointer);
+  return true;
 }
 
 int main()
@@ -36,17 +37,21 @@ int main()
   string choice;
   string goagain;
   string directory;
+  bool readSuccessful;
 
   while(true) //infinite loop
   {
 
     cout << "Enter directory name : ";
     cin >> directory;
-    ReadDirectory(directory);
-    cout << "\n go again ? : (y/n)";
+    readSuccessful = ReadDirectory(directory);
+    if (readSuccessful == false)
+      cout << "oops error opening directory \n"
+    
+    cout << "go again ? (y/n) : ";
     cin >> goagain;
 
-    if((caughtSIGINT == true)||(goagain == "n"))
+    if(caughtSIGINT == true)
     {
       cout << "\nDo you want to quit ? (y/n) : ";
       cin >> choice;
@@ -59,8 +64,6 @@ int main()
         caughtSIGINT = false;
       }
     }
-    else
-      cout << "Here we go again\n";
   }
 
   return 0;
