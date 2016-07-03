@@ -25,6 +25,7 @@ void KillLastChild()
 	if (children.empty() == false)
 	{
 		kill(children.back(), SIGTERM);	// also try *children.back()
+		children.pop_back();		// remove the dead child from the list of children
 	}
 }
 
