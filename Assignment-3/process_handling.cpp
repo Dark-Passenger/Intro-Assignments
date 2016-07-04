@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <unistd.h>
+#include <signal.h>
 
 using namespace  std;
 
@@ -46,19 +47,18 @@ void CreateChild()
 
 	if((pid = fork()) == 0)
 	{
-     //child process will now sleep for 2 hrs.
-		cout << "Child process with process id : " << pid << "Created.\n";
-		cout << "Putting child to sleep...";
+     	//child process will now sleep for 2 hrs.
 		sleep(3600);
 	}
 	else
 	{
 	//add child process pid into children vector.
 		children.push_back(pid);
+		cout << "Child process with process id : " << pid << "Created.\n";
 	}
 }
 
-int main ()
+int main()
 {
 	int choice;
 
