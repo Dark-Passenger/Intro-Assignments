@@ -19,10 +19,10 @@ void child_signal_handler(int sig)
 	int status;
 	int status_code = WEXITSTATUS(status);
 	cout <<"Child exited with status code : " << status_code << "\n";
-	Dead = true;
+	isSigCaught = true;
 }
 
-int Main()
+int main()
 {
 	pid_t pid;
 
