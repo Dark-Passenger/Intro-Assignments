@@ -75,7 +75,7 @@ void readfromDB()
 	mysql_close(connect);
 }
 
-}
+};
 
 int main()
 {
