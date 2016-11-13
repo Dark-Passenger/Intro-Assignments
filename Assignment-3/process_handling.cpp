@@ -3,93 +3,95 @@
 #include <unistd.h>
 #include <signal.h>
 
-using namespace  std;
 
-vector<pid_t> children;
-vector<pid_t>::iterator child;
+std::vector<pid_t> children;
 
 void KillAllChildren()
 {
-	child = children.begin();
-	
-	while( child != children.end())
-	{
-   		kill(*child, SIGTERM);
-   		child++;
-   	}
+
+    for( auto child : children)
+    {
+        kill(child, SIGTERM);
+    }
+
+    std::cout << "All children killed." << std::endl;
 }
 
 void KillLastChild()
 {
-	child = children.begin();
 
-	if (children.empty() == false)
-	{
-		kill(children.back(), SIGTERM);	// also try *children.back()
-		children.pop_back();		// remove the dead child from the list of children
-	}
+    if (children.empty())
+    {
+        std::cout << "No children present." << std::endl;
+    }
+    else
+    {
+        kill(children.back(), SIGTERM);
+        std::cout << "Killed child " << children.back() << std::endl;
+        children.pop_back();        // remove the dead child from the list of children
+    }
 }
 
 void ListAllChildren()
 {
-	child = children.begin();
-	cout << "Current Child Processes are : \n";
-	while( child != children.end())
-	{
-   		cout << *child << "\n";
-   		child++;
-   	}
+    std::cout << "Current Child Processes are : " << std::endl;
+    for( auto child : children)
+    {
+        std::cout << child << std::endl;
+    }
 }
 
 void CreateChild()
 {
-	pid_t pid;
+    pid_t pid;
 
-	if((pid = fork()) == 0)
-	{
-     	//child process will now sleep for 2 hrs.
-		sleep(3600);
-	}
-	else
-	{
-	//add child process pid into children vector.
-		children.push_back(pid);
-		cout << "Child process with process id : " << pid << "Created.\n";
-	}
+    if((pid = fork()) == 0)
+    {
+        //child process will now sleep for 2 hrs.
+        sleep(3600);
+    }
+    else
+    {
+    //add child process pid into children vector.
+        children.push_back(pid);
+        std::cout << "Child process with process id : " << pid << "Created." << std::endl;
+    }
 }
 
 int main()
 {
-	int choice;
+    int choice;
 
-	while (true)
-	{
-		cout <<"1. Create\n"; 
-		cout <<"2. Terminate\n";		//Assumed to terminate the last created process.
-		cout <<"3. List\n";
-		cout <<"4. Exit\n";
-		cout <<"Enter choice : ";
-		cin >>choice;
+    do
+    {
+        std::cout << "1. Create" << std::endl;
+        std::cout << "2. Terminate" << std::endl;        //Assumed to terminate the last created process.
+        std::cout << "3. List" << std::endl;
+        std::cout << "4. Exit" << std::endl;
+        std::cout << "Enter choice : ";
+        std::cin >> choice;
 
-		switch(choice)
-		{
-			case 1 :
-				CreateChild();
-				break;
-			case 2 :
-				KillLastChild();
-				break;
-			case 3 :
-				ListAllChildren();
-				break;
-			case 4 :
-				KillAllChildren();
-				return 0;			//exits aftering killing all the child processes.
-			default :
-				cout << "Wrong option try again";
-				break;	
-		}
-	}
-	
-	return 0;
+        switch(choice)
+        {
+            case 1 :
+                CreateChild();
+                break;
+            case 2 :
+                KillLastChild();
+                break;
+            case 3 :
+                ListAllChildren();
+                break;
+            case 4 :
+                KillAllChildren();
+                std::cout << "Exiting" << std::endl;
+                break;
+            default :
+                std::cout << "Wrong option try again" << std::endl;
+                break;
+        }
+
+    } while(choice !=4);
+
+    return 0;
 }
