@@ -1,14 +1,9 @@
 /*Class defination to be included. To reduce code duplication adding it to a header file.*/
-class sharedclass 
+class sharedclass
 {
-
-private:
-	int result;
-
-public:
-	sharedclass();
-	int add(int a, int b);
-	int subtract(int a, int b);
-	int multiply(int a, int b);
-	int divide(int a, int b);
+    public:
+        int add (int, int);
+        int subtract (int, int);
+        int multiply (int, int);
+        int divide (int, int);
 };
