@@ -2,108 +2,118 @@
 #include <string>
 #include <map>
 
-using namespace std;
-
 class Contact
 {
+    private:
+        std::map <std::string,unsigned long int> contacts;
 
-private:
-	map <string, int> contacts;
+    public:
+        void search_by_name()
+        {
+            std::string name;
+            std::cout << "Enter name : ";
+            std::cin >> name;
+            if(name.empty() == false)
+            {
+                std::cout <<"Number belonging to contact "<< name <<" is : " << contacts[name] << std::endl;
+            }
+            else
+                std::cout <<"Name does not exist" << std::endl;
+        }
 
-void searcher(string search_term)
-{
-	string search_term;
-	cout <<"Enter search term : ";
-	cin >> search_term;
+        void search_by_number()
+        {
+            unsigned long int number = 0;
+            std::cout << "Enter the number : ";
+            std::cin >> number;
 
-   if(s.empty() || (isdigit(s[0])==false))
-   	{
-   		cout <<"Number belonging to contact "<< search_term <<" is : " << contacts.find(search_term)->second <<"\n";
-   	}
+            for(auto& contact : contacts)
+            {
+                if (contact.second == number)
+                {
+                    std::cout << number <<" belongs to contact " << contact.first << std::endl;
+                    break;
+                }
+            }
+        }
 
-   else	//this is a far more resource intensive process. TODO check if stoi iteratively is better than storing value in variable.
-   {
-		number = stoi(search_term);
-		for (map<string, int>::iterator itr = contacts.begin(); itr != contacts.end(); ++itr)
-		{
-			if (itr->second == search_number)
-			{
-				cout <<search_term <<" belongs to contact " << itr->first <<"\n";
-				break;
-			}
-		}
-   }
+        void list()
+        {
+            std::cout <<"Name\tNumber" << std::endl;
+            for (auto& contact : contacts)
+            {
+                std::cout << contact.first << "\t" << contact.second << std::endl;
+            }
+        }
 
-}
+        void add()
+        {
+            std::string name;
+            unsigned long int number;
+            std::cout <<"Name : ";
+            std::cin >>name;
+            std::cout <<"number : ";
+            std::cin >>number;
+            contacts[name] = number;
+            std::cout << "Contact created successfully" << std::endl;
+        }
 
-void lister()
-{
-	cout <<"Name\tNumber\n";
-	for (map<string, int>::iterator itr = contacts.begin(); itr != contacts.end(); ++itr)
-		{
-			cout << itr->first "\t" << itr->second "\n";
-		}
-}
-
-void adder()
-{
-	string name;
-	int number;
-	cout <<"Name : ";
-	cin >>name;
-	cout <<"number : ";
-	cin >>number;
-	contacts[name] = number;
-	cout << "Contact created successfully\n";
-}
-
-void remover()
-{
-	string name;
-	cout <<"Name : ";
-	cin >>name;
-	contacts.erase(name); 
-	cout << "Contact removed successfully\n";
-}
+        void remove()
+        {
+            std::string name;
+            std::cout <<"Name : ";
+            std::cin >>name;
+            contacts.erase(name);
+            std::cout << "Contact removed successfully" << std::endl;
+        }
 };
 
 int main()
 {
-	Contact con;
+    Contact con;
+    int choice = 0;
 
-	while(true){
+    do
+    {
+        std::cout <<"1. search for name" << std::endl;
+        std::cout <<"2. search by number" << std::endl;
+        std::cout <<"3. list all contacts" << std::endl;
+        std::cout <<"4. add contact" << std::endl;
+        std::cout <<"5. remove contact" << std::endl;
+        std::cout <<"6. Exit" << std::endl;
+        std::cout <<"Enter your choice : ";
+        std::cin >> choice;
 
-	cout <<"1. search for name\n";
-	cout <<"2. search by number\n";
-	cout <<"3. list all contacts\n";
-	cout <<"4. add contact\n";
-	cout <<"5. remove contact\n";
-	cout <<"6. Exit\n";
-	cout <<"Enter your choice : ";
-	cin >> choice;
-	
-	switch(choice)
-	{
-	case 1 : con.searcher();
-		break;
+        switch(choice)
+        {
+            case 1 :
+                con.search_by_name();
+                break;
 
-	case 2 : con.searcher();
-		break;
+            case 2 :
+                con.search_by_number();
+                break;
 
-	case 3 : con.lister();
-		break;
+            case 3 :
+                con.list();
+                break;
 
-	case 4 : con.adder();
-		break;
+            case 4 :
+                con.add();
+                break;
 
-	case 5 : con.remover();
-		break;
+            case 5 :
+                con.remove();
+                break;
 
-	case 6 : return 0;
+            case 6 :
+                break;
 
-	default : cout <<"wrong choice try again\n";
-		break;
-	}
-}
-	return 0;
+            default :
+                std::cout <<"wrong choice try again" << std::endl;
+        }
+
+    } while (choice != 6);
+
+    return 0;
 }
