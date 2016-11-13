@@ -2,24 +2,24 @@
 #include <string>
 #include <thread>
 #include <mutex>
+#include <atomic>
 
-using namespace std;
 
-mutex locker;
-bool isEvenPrinted = true;
+std::mutex locker;
+std::atomic<bool> isEvenPrinted(true);
 
 void Print_Odd(int id, int end)
 {
     int x = 1;
     while (x < end)
         {
-            if (isEvenPrinted == true)
+            if (isEvenPrinted.load() == true)
             {
                 locker.lock();
-                cout << "Thread ID : " << id << " : " << x << "\n";
+                std::cout << "Thread ID : " << id << " : " << x << "\n";
                 x += 2;
                 locker.unlock();
-                this_thread::yield();
+                std::this_thread::yield();
                 isEvenPrinted = false;
             }
             else
@@ -34,18 +34,14 @@ void Print_Even(int id, int end)
     int x = 2;
     while (x < end)
         {
-            if (isEvenPrinted == false)
+            if (isEvenPrinted.load() == false)
             {
                 locker.lock();
-                cout << "Thread ID : " << id << " : " << x << "\n";
+                std::cout << "Thread ID : " << id << " : " << x << "\n";
                 x += 2;
                 locker.unlock();
-                this_thread::yield();
+                std::this_thread::yield();
                 isEvenPrinted = true;
-            }
-            else
-            {
-                continue;
             }
         }
 }
@@ -53,11 +49,11 @@ void Print_Even(int id, int end)
 int main()
 {
     int limit = 0;
-    cout << "Enter limit : ";
-    cin >> limit;
+    std::cout << "Enter limit : ";
+    std::cin >> limit;
 
-    thread Odd(Print_Odd, 1, limit);
-    thread Even(Print_Even, 2, limit);
+    std::thread Odd(Print_Odd, 1, limit);
+    std::thread Even(Print_Even, 2, limit);
 
     Odd.join();
     Even.join();

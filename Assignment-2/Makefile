@@ -3,15 +3,14 @@
 # # *****************************************************
 # # Variables to control Makefile operation
 
-CXX = g++
-FLAGS = -std=c++11 -pthread
-RM = rm
+CXX = clang++
+CXXFLAGS = -Weverything -std=c++11 -pthread
 
 # ****************************************************
 # # Targets needed to bring the executable up to date
 
 main:
-	$(CXX) $(FLAGS) main.cpp -o main
+	@$(CXX) $(CXXFLAGS) main.cpp -o main
 
 clean:
-	$(RM) main
+	@rm -f main
